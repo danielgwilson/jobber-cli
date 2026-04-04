@@ -1,6 +1,6 @@
 {
   "name": "jobber-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Agent-first private-surface CLI for Jobber",
   "license": "MIT",
   "author": "Daniel G Wilson",
@@ -20,7 +20,9 @@
   "files": [
     "dist",
     "docs",
+    "SKILL.md",
     "skills",
+    "agents",
     "README.md",
     "LICENSE"
   ],

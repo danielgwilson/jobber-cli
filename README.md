@@ -10,6 +10,26 @@ This package is intentionally v0:
 - generated operation inventory from authenticated frontend bundles
 - read-first defaults
 
+## Agent Quickstart
+
+From a live logged-in Jobber browser session on the same machine:
+
+```bash
+jobber auth import-agent-browser
+jobber doctor --json
+jobber whoami --json
+jobber operations list --search client --json
+```
+
+For raw one-off GraphQL without creating temp files:
+
+```bash
+jobber graphql run \
+  --operation-name CurrentAccount \
+  --query 'query CurrentAccount { account { id name inTrial industry } }' \
+  --json
+```
+
 ## Install
 
 Local:
@@ -50,6 +70,10 @@ Supported env vars:
 - `JOBBER_GRAPHQL_VERSION`
 - `JOBBER_API_URL`
 
+## Skill Install
+
+This repo includes both a root [SKILL.md](/Users/danielgwilson/local_git/platform-adapters/jobber/jobber-cli/SKILL.md) and a nested [skills/jobber/SKILL.md](/Users/danielgwilson/local_git/platform-adapters/jobber/jobber-cli/skills/jobber/SKILL.md) so external installers and repo-based skill flows have an obvious entry point.
+
 ## Main Commands
 
 ```bash
@@ -59,6 +83,7 @@ jobber auth status --json
 jobber operations list --json
 jobber operations list --search client --json
 jobber operations inspect ClientDefaults --json
+jobber graphql run --operation-name CurrentAccount --query 'query CurrentAccount { account { id name inTrial industry } }' --json
 jobber graphql run --query-file ./query.graphql --variables-file ./vars.json --json
 ```
 
@@ -67,3 +92,4 @@ jobber graphql run --query-file ./query.graphql --variables-file ./vars.json --j
 - This adapter depends on Jobber's private web surface and is therefore fragile.
 - `operations list` is a discovered inventory, not a guarantee that every operation has a recovered query document yet.
 - `graphql run` is intentionally generic so new workflows can be tested before typed subcommands are added.
+- `auth import-agent-browser` assumes a live authenticated `agent-browser` session or attached browser on the same machine.

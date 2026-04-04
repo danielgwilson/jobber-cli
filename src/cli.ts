@@ -28,7 +28,8 @@ async function readStdin(): Promise<string> {
   return Buffer.concat(chunks).toString("utf8");
 }
 
-async function readJsonFile(filePath?: string): Promise<Record<string, unknown>> {
+async function readJsonInput(filePath?: string, inline?: string): Promise<Record<string, unknown>> {
+  if (inline?.trim()) return JSON.parse(inline) as Record<string, unknown>;
   if (!filePath) return {};
   const raw = await fs.readFile(filePath, "utf8");
   return JSON.parse(raw) as Record<string, unknown>;
@@ -238,16 +239,18 @@ async function main(): Promise<void> {
 
   graphql
     .command("run")
-    .requiredOption("--query-file <path>", "Path to a GraphQL document file")
+    .option("--query-file <path>", "Path to a GraphQL document file")
     .option("--query <query>", "Inline GraphQL document")
+    .option("--variables <json>", "Inline JSON variables")
     .option("--variables-file <path>", "Path to a JSON variables file")
     .option("--operation-name <name>", "Operation name")
     .option("--json", "Print JSON")
-    .action(async (opts: JsonOption & { query?: string; queryFile?: string; variablesFile?: string; operationName?: string }) => {
+    .action(
+      async (opts: JsonOption & { query?: string; queryFile?: string; variables?: string; variablesFile?: string; operationName?: string }) => {
       try {
         const client = await requireClient(opts.json);
         const query = await readQuery(opts.queryFile, opts.query);
-        const variables = await readJsonFile(opts.variablesFile);
+        const variables = await readJsonInput(opts.variablesFile, opts.variables);
         const response = await client.graphql({
           operationName: opts.operationName,
           query,
@@ -262,7 +265,8 @@ async function main(): Promise<void> {
         else process.stderr.write(`${envelope.error.message}\n`);
         process.exitCode = error instanceof JobberApiError ? 1 : 1;
       }
-    });
+    },
+  );
 
   await program.parseAsync(process.argv);
 }

@@ -29,7 +29,7 @@ Do not guess alternate package names unless they are explicitly published later.
 - Check current identity: `jobber whoami --json`
 - Browse operation inventory: `jobber operations list --search client --json`
 - Inspect one operation: `jobber operations inspect ClientDefaults --json`
-- Run raw GraphQL when needed: `jobber graphql run --query-file ./query.graphql --variables-file ./vars.json --json`
+- Run raw GraphQL when needed: `jobber graphql run --operation-name CurrentAccount --query 'query CurrentAccount { account { id name inTrial industry } }' --json`
 
 ## Auth
 
@@ -43,6 +43,7 @@ Other supported paths:
 - `JOBBER_COOKIE_HEADER=... jobber doctor --json`
 
 Avoid pasting full cookie headers into logs or chat.
+`jobber auth import-agent-browser` assumes a live authenticated `agent-browser` session or attached browser on the same machine.
 
 ## Constraints
 

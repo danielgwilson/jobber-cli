@@ -7,15 +7,17 @@ Typical uses:
 - inspect discovered Jobber operations
 - run raw GraphQL queries against Jobber
 - validate Jobber auth
+- identify the current Jobber user and account
 - bootstrap auth from a live `agent-browser` session
 - prototype new Jobber workflows before adding typed commands
 
 Suggested workflow:
 
 1. `jobber doctor --json`
-2. `jobber operations list --search <term> --json`
-3. `jobber operations inspect <name> --json`
-4. `jobber graphql run ... --json`
+2. `jobber whoami --json`
+3. `jobber operations list --search <term> --json`
+4. `jobber operations inspect <name> --json`
+5. `jobber graphql run --operation-name CurrentAccount --query 'query CurrentAccount { account { id name inTrial industry } }' --json`
 
 Notes:
 

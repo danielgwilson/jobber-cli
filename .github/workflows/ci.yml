@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Fail on tracked raw captures
+        run: |
+          if git ls-files | grep -E '(^|/)\.firecrawl/|\.har$|\.har\.gz$|\.trace$|\.trace\.json$|(^|/)storage-state\.json$|(^|/)cookies\.(txt|json)$|\.session\.json$'; then
+            echo "Remove raw browser capture artifacts before merging." >&2
+            exit 1
+          fi
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_COMMENTS: false
+          GITLEAKS_CONFIG: .gitleaks.toml
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - name: Check npm pack surface
+        run: |
+          pack_json="$(npm pack --dry-run --json --silent)"
+          printf '%s' "$pack_json" | node -e '
+            const fs = require("node:fs");
+            const raw = fs.readFileSync(0, "utf8");
+            const parsed = JSON.parse(raw);
+            const data = Array.isArray(parsed) ? parsed[0] : parsed;
+            const files = (data.files || []).map((file) => file.path);
+            process.stdout.write(files.join("\n"));
+          ' | tee /tmp/pack-files.txt
+          if grep -E '(^test/|^tests/|(^|/)\.firecrawl/|\.har$|\.har\.gz$|\.trace$|\.trace\.json$|(^|/)storage-state\.json$|(^|/)cookies\.(txt|json)$|\.session\.json$)' /tmp/pack-files.txt; then
+            echo "Suspicious files would ship in the npm tarball." >&2
+            exit 1
+          fi

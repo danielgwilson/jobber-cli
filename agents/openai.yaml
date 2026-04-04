@@ -1,0 +1,4 @@
+version: 1
+display_name: Jobber CLI
+short_description: Private-surface Jobber operations through a local agent-first CLI
+default_prompt: Use the jobber CLI to inspect discovered Jobber operations, validate auth, identify the current user and account, and run raw GraphQL against Jobber's private web API. Prefer read operations before mutations.

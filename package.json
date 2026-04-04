@@ -1,0 +1,59 @@
+{
+  "name": "jobber-cli",
+  "version": "0.1.0",
+  "description": "Agent-first private-surface CLI for Jobber",
+  "license": "MIT",
+  "author": "Daniel G Wilson",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielgwilson/jobber-cli.git"
+  },
+  "homepage": "https://github.com/danielgwilson/jobber-cli#readme",
+  "bugs": {
+    "url": "https://github.com/danielgwilson/jobber-cli/issues"
+  },
+  "bin": {
+    "jobber": "dist/cli.js",
+    "jobber-cli": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "jobber",
+    "graphql",
+    "cli",
+    "agent-first",
+    "private-surface"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "npm run clean && tsc -p tsconfig.build.json && node -e \"require('node:fs').chmodSync('dist/cli.js',0o755)\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "npm run typecheck",
+    "dev": "tsx src/cli.ts",
+    "generate:inventory": "node scripts/generate-inventory.mjs",
+    "test": "tsx --test",
+    "prepublishOnly": "npm test",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

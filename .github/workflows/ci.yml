@@ -45,19 +45,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - run: npm run lint:public-surface
       - run: npm test
-      - name: Check npm pack surface
-        run: |
-          pack_json="$(npm pack --dry-run --json --silent)"
-          printf '%s' "$pack_json" | node -e '
-            const fs = require("node:fs");
-            const raw = fs.readFileSync(0, "utf8");
-            const parsed = JSON.parse(raw);
-            const data = Array.isArray(parsed) ? parsed[0] : parsed;
-            const files = (data.files || []).map((file) => file.path);
-            process.stdout.write(files.join("\n"));
-          ' | tee /tmp/pack-files.txt
-          if grep -E '(^test/|^tests/|(^|/)\.firecrawl/|\.har$|\.har\.gz$|\.trace$|\.trace\.json$|(^|/)storage-state\.json$|(^|/)cookies\.(txt|json)$|\.session\.json$)' /tmp/pack-files.txt; then
-            echo "Suspicious files would ship in the npm tarball." >&2
-            exit 1
-          fi

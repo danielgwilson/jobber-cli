@@ -35,7 +35,8 @@ jobber graphql run \
 Local:
 
 ```bash
-cd /Users/danielgwilson/local_git/platform-adapters/jobber/jobber-cli
+git clone https://github.com/danielgwilson/jobber-cli.git
+cd jobber-cli
 npm install
 npm link
 ```
@@ -72,7 +73,7 @@ Supported env vars:
 
 ## Skill Install
 
-This repo includes both a root [SKILL.md](/Users/danielgwilson/local_git/platform-adapters/jobber/jobber-cli/SKILL.md) and a nested [skills/jobber/SKILL.md](/Users/danielgwilson/local_git/platform-adapters/jobber/jobber-cli/skills/jobber/SKILL.md) so external installers and repo-based skill flows have an obvious entry point.
+This repo includes both a root `SKILL.md` and a nested `skills/jobber/SKILL.md` so external installers and repo-based skill flows have an obvious entry point.
 
 ## Main Commands
 

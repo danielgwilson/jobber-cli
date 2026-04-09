@@ -1,6 +1,6 @@
 {
   "name": "jobber-cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Agent-first private-surface CLI for Jobber",
   "license": "MIT",
   "author": "Daniel G Wilson",
@@ -38,10 +38,11 @@
     "build": "npm run clean && tsc -p tsconfig.build.json && node -e \"require('node:fs').chmodSync('dist/cli.js',0o755)\"",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "npm run typecheck",
+    "lint:public-surface": "node scripts/public-surface-check.mjs",
     "dev": "tsx src/cli.ts",
     "generate:inventory": "node scripts/generate-inventory.mjs",
     "test": "tsx --test",
-    "prepublishOnly": "npm test",
+    "prepublishOnly": "npm run lint && npm run lint:public-surface && npm test",
     "prepare": "npm run build"
   },
   "dependencies": {
